@@ -106,7 +106,7 @@ fn rocket() -> _ {
         Json(chain.lock().unwrap().clone())
     }
 
-    //comminucates with other nodes on the list to see who has the longest chain. Resolves an conflicts and adopts the longest chain.
+    //communicates with other nodes on the list to see who has the longest chain. Resolves any conflicts and adopts the longest chain.
     #[get("/resolve")]
     fn resolve_chain(chain: &State<Arc<Mutex<Chain>>>) -> Json<Chain> {
         let our_chain = chain;
