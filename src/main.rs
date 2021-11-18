@@ -85,12 +85,18 @@ fn rocket() -> _ {
 
     //creates a new transaction from Json
     #[post("/transaction/new", data = "<body>")]
-    fn new_transaction(body: Json<Transaction>) -> Json<Transaction> {
-        Json(Transaction::build_transactions(
+    fn new_transaction(
+        body: Json<Transaction>,
+        chain: &State<Arc<Mutex<Chain>>>,
+    ) -> Json<Transaction> {
+        let new_transaction = Transaction::build_transactions(
             body.sender.to_string(),
             body.recipiant.to_string(),
             body.amount,
-        ))
+        );
+        let mut our_chain = chain.lock().unwrap();
+        our_chain.blockchain.current_transaction = new_transaction.clone();
+        Json(new_transaction)
     }
 
     //takes an Ip address and adds it to the node list
